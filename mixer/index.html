@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="/mixer/script/soundmanager2-nodebug-jsmin.js"></script>
+		<script src="//code.jquery.com/jquery-git.js"></script>
+		<script src="//code.jquery.com/ui/jquery-ui-git.js"></script>
+		<link href="//code.jquery.com/ui/jquery-ui-git.css" rel="stylesheet" type="text/css" />
+		<link href="/mixer/css/style.css" rel="stylesheet" type="text/css"/>
+		<script>
+		
+
+		$(document).ready(function(){
+			var mySound;
+			var playing = false;
+			var position;
+			var duration;
+			var playPercent;
+			var playhead = $('#playhead');
+			var timeline = $('#timeline');
+			var timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
+			var playheadClicked = false;
+
+			soundManager.setup({
+			  url: '/mixer/swf/swf-files/',
+			  onready: function() {
+			    mySound = soundManager.createSound({
+				      id: 'accordion',
+				      url: '/mixer/audio/accordion.mp3',
+				      onfinish: function() {
+	   						playing = false;
+	   						pButton.className = "";
+							pButton.className = "play";
+	 					}
+			    });
+			    //mySound.play();
+			  },
+			  ontimeout: function() {
+			    // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
+			  }
+			});
+
+			function playAudio(track) {
+				
+
+
+				if (!playing) {
+					playing = true;
+					mySound.play({
+						multiShot: false,
+						whileplaying: function() {
+						position = this.position;
+						duration = this.durationEstimate;
+
+						playPercent = 100 * (position / duration) / 1.052;
+						
+						movePlayhead();
+						console.log($('#playhead').css("marginLeft"));
+						//console.log(duration + " / " + position + " * 100  = " + playPercent);
+						
+						}
+					});
+					pButton.className = "";
+					pButton.className = "pause";
+				} else {	playing = false;
+					mySound.pause();
+					pButton.className = "";
+					pButton.className = "play";
+				}
+			}
+
+			
+			function movePlayhead(){
+				
+				var margStr = $('#playhead').css("marginLeft").replace("px", "");
+				margInt = parseInt(margStr);
+				
+				
+					$('#playhead').css("marginLeft", (playPercent) + "%"); 
+				
+			}
+			
+
+			$('#timeline').click(function(e){
+				
+					if(!playheadClicked){
+
+					var posX = (e.pageX -9) - $(this).offset().left;
+					 
+					var clickPercent = posX / $('#timeline').width();
+
+					console.log("clicket at " + clickPercent);
+
+					mySound.setPosition(duration * clickPercent);
+
+
+					}
+				
+			});
+
+			
+
+			$('#playhead').draggable({ containment: "parent", axis: 'x' });
+
+			// Get the axis option, after initialization.
+			var axis = $('#playhead').draggable('option', 'axis');
+			// Set the axis option, after initialization.
+			$('#playhead').draggable('option', 'axis', 'x');
+
+			$( "#playhead" ).draggable({
+			  stop: function( e, ui ) {
+			  	console.log("drag stopped");
+			  	if(playheadClicked){
+					var posX2 = (e.pageX-9) - $('#timeline').offset().left;
+				 
+					var clickPercent = posX2 / $('#timeline').width();
+
+					mySound.setPosition(duration * clickPercent);
+
+					console.log("playPercent = " + playPercent);
+					console.log("posX2(" + posX2 + ") / width(" + $('#timeline').width() + ") = clickPercent(" + clickPercent + ")");
+					console.log("calculated position = "+ (duration * clickPercent) + "  actual position = "+ position);
+
+					$('#playhead').css("marginLeft", (clickPercent) + "%");
+
+
+					playheadClicked = false;
+				}	
+			  }
+			});
+
+			
+			$('#pButton').click(function(){
+				playAudio();
+				console.log(mySound.id + " is playing");
+			});
+
+			$('#playhead').mousedown(function(e){
+				playheadClicked = true;
+				console.log("playhead clicked");
+			});
+
+
+			$(document).mouseup(function(e){
+				
+			});
+
+		});
+
+		</script>		
+	</head>
+	<body>
+		Sound Manager test
+		<div id="audioplayer">
+			<button id="pButton" class="play"></button>
+			<div id="timeline">
+				<div id="playhead"></div>
+			</div>
+		</div>
+	</body>
+</html>

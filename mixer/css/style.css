@@ -1,0 +1,49 @@
+#timeline{
+	width: 400px;
+	height: 20px;
+	margin-top: 20px;
+	float: left;
+	border-radius: 15px;
+	
+	border: 2px solid black;
+}
+
+ 
+#playhead{
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	
+	background: black;
+	margin-left:0;
+	border: 1px solid black;
+}
+
+
+
+#pButton{
+	height:60px; 
+	width: 60px;
+	border: none;
+	background-size: 50% 50%;
+	background-position: center;
+	outline: 0;
+}
+.play{
+	background: url('/mixer/images/play4.png') no-repeat;
+	float:left;
+}
+.pause{
+	background: url('/mixer/images/pause4.png') no-repeat;
+	float:left;
+}
+
+#audioplayer{
+	border:2px solid black;
+	border-radius: 3px;
+	width: 500px;
+	height:65px;
+	text-align: center;
+	margin: 50px auto auto auto;
+
+}
