@@ -70,6 +70,7 @@ $(document).ready(function(){
         }
         
     });
+    
     $('.innerContain').append('</p>');
   }).error(function(){
       console.log('error');
@@ -161,16 +162,3 @@ $(document).ready(function(){
 
 });
 
-/*$(document).scroll(function(){
-  if ($(document).scrollTop() >= 35) {
-    console.log('scrolled');
-    $('.share').hide();
-  } else {
-    $('.share').show();
-  }
-  
-});*/
-
-/*$(window).resize(function() {
-  location.reload();
-});*/
